@@ -72,6 +72,16 @@ type ProviderConfig interface {
 	GetRateLimit() RateLimitConfig
 }
 
+type ConfigFileConfig interface {
+	BaseConfig
+	// 配置文件连接器
+	GetConfigConnectorConfig() ConfigConnectorConfig
+	// 值缓存的最大数量
+	GetPropertiesValueCacheSize() int32
+	// 缓存的过期时间，默认为 60s
+	GetPropertiesValueExpireTime() int64
+}
+
 // RateLimitConfig 限流相关配置
 type RateLimitConfig interface {
 	BaseConfig
@@ -105,6 +115,9 @@ type SystemConfig interface {
 	// GetDiscoverCluster global.systemConfig.discoverCluster
 	// 服务发现集群
 	GetDiscoverCluster() ServerClusterConfig
+	// GetConfigCluster global.systemConfig.configCluster
+	// 配置中心集群
+	GetConfigCluster() ServerClusterConfig
 	// GetHealthCheckCluster global.systemConfig.healthCheckCluster
 	// 健康检查集群
 	GetHealthCheckCluster() ServerClusterConfig
@@ -407,6 +420,8 @@ type Configuration interface {
 	GetConsumer() ConsumerConfig
 	// GetProvider provider前缀开头的所有配置项
 	GetProvider() ProviderConfig
+	// GetConfigFile config前缀开头的所有配置项
+	GetConfigFile() ConfigFileConfig
 }
 
 // When when to active health check
@@ -464,4 +479,9 @@ type ServiceSpecificConfig interface {
 	GetServiceCircuitBreaker() CircuitBreakerConfig
 
 	GetServiceRouter() ServiceRouterConfig
+}
+
+type ConfigConnectorConfig interface {
+	ServerConnectorConfig
+	GetConnectorType() string
 }

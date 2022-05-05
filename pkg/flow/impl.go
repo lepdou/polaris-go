@@ -19,6 +19,7 @@ package flow
 
 import (
 	"github.com/modern-go/reflect2"
+	"github.com/polarismesh/polaris-go/pkg/plugin/configconnector"
 
 	"github.com/polarismesh/polaris-go/pkg/config"
 	"github.com/polarismesh/polaris-go/pkg/flow/cbcheck"
@@ -43,6 +44,8 @@ import (
 type Engine struct {
 	// 服务端连接器
 	connector serverconnector.ServerConnector
+	// 服务端连接器
+	configConnector configconnector.ConfigConnector
 	// 服务本地缓存
 	registry localregistry.LocalRegistry
 	// 全局配置
@@ -100,6 +103,10 @@ func InitFlowEngine(flowEngine *Engine, initContext plugin.InitContext) error {
 			return err
 		}
 	}
+
+	// 加载配置中心连接器
+	flowEngine.configConnector, err = data.GetConfigConnector(cfg, plugins)
+
 	// 加载服务路由链插件
 	err = flowEngine.LoadFlowRouteChain()
 	if err != nil {

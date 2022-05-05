@@ -181,7 +181,7 @@ func (s *ServerConnectorConfigImpl) Verify() error {
 }
 
 // SetDefault 设置ServerConnector配置的默认值
-func (s *ServerConnectorConfigImpl) SetDefault() {
+func (s *ServerConnectorConfigImpl) SetDefaultWithoutType() {
 	if nil == s.ConnectTimeout {
 		s.ConnectTimeout = model.ToDurationPtr(DefaultServerConnectTimeout)
 	}
@@ -203,6 +203,10 @@ func (s *ServerConnectorConfigImpl) SetDefault() {
 	if len(s.Protocol) == 0 {
 		s.Protocol = DefaultServerConnector
 	}
+}
+
+func (s *ServerConnectorConfigImpl) SetDefault() {
+	s.SetDefaultWithoutType()
 	s.Plugin.SetDefault(common.TypeServerConnector)
 }
 
