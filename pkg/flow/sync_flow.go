@@ -632,3 +632,7 @@ func (e *Engine) realInitCalleeService(req *model.InitCalleeServiceRequest,
 	reportReq.CallResult.SetSuccess(costTime)
 	return nil
 }
+
+func (e *Engine) SyncGetConfigFile(namespace, fileGroup, fileName string) (model.ConfigFile, error) {
+	return e.configFileService.GetConfigFile(namespace, fileGroup, fileName)
+}

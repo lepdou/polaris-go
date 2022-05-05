@@ -19,6 +19,7 @@ package flow
 
 import (
 	"github.com/modern-go/reflect2"
+	"github.com/polarismesh/polaris-go/pkg/configuration"
 	"github.com/polarismesh/polaris-go/pkg/plugin/configconnector"
 
 	"github.com/polarismesh/polaris-go/pkg/config"
@@ -76,6 +77,8 @@ type Engine struct {
 	circuitBreakerChain []circuitbreaker.InstanceCircuitBreaker
 	// 修改消息订阅插件链
 	subscribe subscribe.Subscribe
+	// 配置中心门面类
+	configFileService *configuration.ConfigFileService
 }
 
 // InitFlowEngine 初始化flowEngine实例
@@ -152,6 +155,10 @@ func InitFlowEngine(flowEngine *Engine, initContext plugin.InitContext) error {
 	}
 	initContext.Plugins.RegisterEventSubscriber(common.OnServiceUpdated, callbackHandler)
 	globalCtx.SetValue(model.ContextKeyEngine, flowEngine)
+
+	//初始化配置中心服务
+	flowEngine.configFileService = configuration.NewConfigFileService(flowEngine.connector, flowEngine.configuration)
+
 	return nil
 }
 
