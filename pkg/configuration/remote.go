@@ -20,11 +20,11 @@ package configuration
 import (
 	"github.com/polarismesh/polaris-go/pkg/config"
 	"github.com/polarismesh/polaris-go/pkg/model"
-	"github.com/polarismesh/polaris-go/pkg/plugin/serverconnector"
+	"github.com/polarismesh/polaris-go/pkg/plugin/configconnector"
 )
 
 type remoteConfigFileRepo struct {
-	connector          serverconnector.ServerConnector
+	connector          configconnector.ConfigConnector
 	configuration      config.Configuration
 	configFileMetadata model.DefaultConfigFileMetadata
 
@@ -34,7 +34,7 @@ type remoteConfigFileRepo struct {
 type remoteRepoChangeListener func(configFileMetadata model.DefaultConfigFileMetadata, newContent string)
 
 func newRemoteConfigFileRepo(metadata model.DefaultConfigFileMetadata,
-	connector serverconnector.ServerConnector,
+	connector configconnector.ConfigConnector,
 	configuration config.Configuration) *remoteConfigFileRepo {
 	repo := &remoteConfigFileRepo{
 		connector:          connector,

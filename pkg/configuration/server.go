@@ -18,15 +18,16 @@
 package configuration
 
 import (
+	"sync"
+
 	"github.com/polarismesh/polaris-go/pkg/config"
 	"github.com/polarismesh/polaris-go/pkg/model"
-	"github.com/polarismesh/polaris-go/pkg/plugin/serverconnector"
-	"sync"
+	"github.com/polarismesh/polaris-go/pkg/plugin/configconnector"
 )
 
 // ConfigFileService 配置文件核心服务门面类
 type ConfigFileService struct {
-	connector         serverconnector.ServerConnector
+	connector         configconnector.ConfigConnector
 	configuration     config.Configuration
 	configFileManager *configFileManager
 }
@@ -34,7 +35,7 @@ type ConfigFileService struct {
 var configFileService *ConfigFileService
 var once = new(sync.Once)
 
-func NewConfigFileService(connector serverconnector.ServerConnector, configuration config.Configuration) *ConfigFileService {
+func NewConfigFileService(connector configconnector.ConfigConnector, configuration config.Configuration) *ConfigFileService {
 	once.Do(func() {
 		configFileService = &ConfigFileService{
 			connector:         connector,

@@ -18,18 +18,19 @@
 package configuration
 
 import (
+	"sync"
+
 	"github.com/polarismesh/polaris-go/pkg/config"
 	"github.com/polarismesh/polaris-go/pkg/model"
-	"github.com/polarismesh/polaris-go/pkg/plugin/serverconnector"
-	"sync"
+	"github.com/polarismesh/polaris-go/pkg/plugin/configconnector"
 )
 
 type configFileFactory struct {
-	connector     serverconnector.ServerConnector
+	connector     configconnector.ConfigConnector
 	configuration config.Configuration
 }
 
-func newConfigFileFactory(connector serverconnector.ServerConnector, configuration config.Configuration) *configFileFactory {
+func newConfigFileFactory(connector configconnector.ConfigConnector, configuration config.Configuration) *configFileFactory {
 	return &configFileFactory{
 		connector:     connector,
 		configuration: configuration,
@@ -43,11 +44,11 @@ func (c *configFileFactory) createConfigFile(configFileMetadata model.DefaultCon
 
 type configFileFactoryManager struct {
 	factories     *sync.Map
-	connector     serverconnector.ServerConnector
+	connector     configconnector.ConfigConnector
 	configuration config.Configuration
 }
 
-func newConfigFileFactoryManager(connector serverconnector.ServerConnector, configuration config.Configuration) *configFileFactoryManager {
+func newConfigFileFactoryManager(connector configconnector.ConfigConnector, configuration config.Configuration) *configFileFactoryManager {
 	return &configFileFactoryManager{
 		factories:     new(sync.Map),
 		connector:     connector,

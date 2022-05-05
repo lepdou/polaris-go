@@ -20,7 +20,6 @@ package configconnector
 
 import (
 	"github.com/polarismesh/polaris-go/pkg/model"
-	configpb "github.com/polarismesh/polaris-go/pkg/model/pb/v1"
 	"github.com/polarismesh/polaris-go/pkg/plugin"
 	"github.com/polarismesh/polaris-go/pkg/plugin/common"
 )
@@ -36,14 +35,14 @@ func (p *Proxy) SetRealPlugin(plugin plugin.Plugin, engine model.Engine) {
 }
 
 // GetConfigFile Get config file
-func (p *Proxy) GetConfigFile(namespace, group, filename string) (*configpb.ConfigClientResponse, error) {
-	response, err := p.ConfigConnector.GetConfigFile(namespace, group, filename)
+func (p *Proxy) GetConfigFile(configFile *ConfigFile) (*ConfigFileResponse, error) {
+	response, err := p.ConfigConnector.GetConfigFile(configFile)
 	return response, err
 }
 
 // WatchConfigFiles Watch config files
-func (p *Proxy) WatchConfigFiles(request *configpb.ClientWatchConfigFileRequest) (*configpb.ConfigClientResponse, error) {
-	response, err := p.ConfigConnector.WatchConfigFiles(request)
+func (p *Proxy) WatchConfigFiles(configFileList []*ConfigFile) (*ConfigFileResponse, error) {
+	response, err := p.ConfigConnector.WatchConfigFiles(configFileList)
 	return response, err
 }
 

@@ -26,6 +26,8 @@ import (
 
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
+	"github.com/polarismesh/polaris-go/pkg/plugin/configconnector"
+
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/polarismesh/polaris-go/pkg/model/pb"
 
@@ -105,7 +107,7 @@ func (g *Connector) Destroy() error {
 }
 
 // GetConfigFile Get config file
-func (c *Connector) GetConfigFile(namespace, group, filename string) (*configpb.ConfigClientResponse, error) {
+func (c *Connector) GetConfigFile(configFile *configconnector.ConfigFile) (*configconnector.ConfigFileResponse, error) {
 	var err error
 	if err = c.waitDiscoverReady(); err != nil {
 		return nil, err
@@ -127,7 +129,7 @@ func (c *Connector) GetConfigFile(namespace, group, filename string) (*configpb.
 		defer cancel()
 	}
 	// 打印请求报文
-	info, _ := toClientConfigFileInfo(namespace, group, filename)
+	info := transferToClientConfigFileInfo(configFile)
 	if log.GetBaseLogger().IsLevelEnabled(log.DebugLog) {
 		reqJson, _ := (&jsonpb.Marshaler{}).MarshalToString(info)
 		log.GetBaseLogger().Debugf("request to send is %s, opKey %s, connID %s", reqJson, opKey, conn.ConnID)
@@ -136,17 +138,8 @@ func (c *Connector) GetConfigFile(namespace, group, filename string) (*configpb.
 	return c.handleResponse(info.String(), reqID, opKey, pbResp, err, conn, startTime)
 }
 
-func toClientConfigFileInfo(namespace, group, filename string) (*configpb.ClientConfigFileInfo, error) {
-	return &configpb.ClientConfigFileInfo{
-		Namespace: wrapperspb.String(namespace),
-		Group:     wrapperspb.String(group),
-		FileName:  wrapperspb.String(filename),
-		Version:   wrapperspb.UInt64(0),
-	}, nil
-}
-
 // WatchConfigFiles Watch config files
-func (c *Connector) WatchConfigFiles(request *configpb.ClientWatchConfigFileRequest) (*configpb.ConfigClientResponse, error) {
+func (c *Connector) WatchConfigFiles(configFileList []*configconnector.ConfigFile) (*configconnector.ConfigFileResponse, error) {
 	var err error
 	if err = c.waitDiscoverReady(); err != nil {
 		return nil, err
@@ -167,6 +160,12 @@ func (c *Connector) WatchConfigFiles(request *configpb.ClientWatchConfigFileRequ
 	if cancel != nil {
 		defer cancel()
 	}
+	// 构造request
+	var configFileInfoList []*configpb.ClientConfigFileInfo
+	for _, c := range configFileList {
+		configFileInfoList = append(configFileInfoList, transferToClientConfigFileInfo(c))
+	}
+	request := &configpb.ClientWatchConfigFileRequest{WatchFiles: configFileInfoList}
 	// 打印请求报文
 	if log.GetBaseLogger().IsLevelEnabled(log.DebugLog) {
 		reqJson, _ := (&jsonpb.Marshaler{}).MarshalToString(request)
@@ -208,7 +207,7 @@ func (c *Connector) waitDiscoverReady() error {
 }
 
 func (c *Connector) handleResponse(request string, reqID string, opKey string, response *configpb.ConfigClientResponse,
-	err error, conn *network.Connection, startTime time.Time) (*configpb.ConfigClientResponse, error) {
+	err error, conn *network.Connection, startTime time.Time) (*configconnector.ConfigFileResponse, error) {
 	endTime := clock.GetClock().Now()
 	if err != nil {
 		return nil, connector.NetworkError(c.connManager, conn, int32(model.ErrorCodeRpcError), err, startTime,
@@ -225,7 +224,11 @@ func (c *Connector) handleResponse(request string, reqID string, opKey string, r
 	//预期code，正常响应
 	if code == configpb.ExecuteSuccess || code == configpb.NotFoundResource || code == configpb.DataNoChange {
 		c.connManager.ReportSuccess(conn.ConnID, int32(serverCodeType), endTime.Sub(startTime))
-		return response, nil
+		return &configconnector.ConfigFileResponse{
+			Code:       response.GetCode().GetValue(),
+			Message:    response.GetInfo().GetValue(),
+			ConfigFile: transferFromClientConfigFileInfo(response.GetConfigFile()),
+		}, nil
 	} else {
 		// 当server发生了内部错误时，上报调用服务失败
 		errMsg := fmt.Sprintf(
@@ -233,6 +236,26 @@ func (c *Connector) handleResponse(request string, reqID string, opKey string, r
 			request, response.GetCode().GetValue(), response.GetInfo().GetValue(), conn.ConnID)
 		c.connManager.ReportFail(conn.ConnID, int32(model.ErrCodeServerError), endTime.Sub(startTime))
 		return nil, model.NewSDKError(model.ErrCodeServerException, nil, errMsg)
+	}
+}
+
+func transferToClientConfigFileInfo(configFile *configconnector.ConfigFile) *configpb.ClientConfigFileInfo {
+	return &configpb.ClientConfigFileInfo{
+		Namespace: wrapperspb.String(configFile.Namespace),
+		Group:     wrapperspb.String(configFile.GetFileGroup()),
+		FileName:  wrapperspb.String(configFile.GetFileName()),
+		Version:   wrapperspb.UInt64(configFile.GetVersion()),
+	}
+}
+
+func transferFromClientConfigFileInfo(configFileInfo *configpb.ClientConfigFileInfo) *configconnector.ConfigFile {
+	return &configconnector.ConfigFile{
+		Namespace: configFileInfo.GetNamespace().GetValue(),
+		FileGroup: configFileInfo.GetGroup().GetValue(),
+		FileName:  configFileInfo.GetFileName().GetValue(),
+		Content:   configFileInfo.GetContent().GetValue(),
+		Version:   configFileInfo.GetVersion().GetValue(),
+		Md5:       configFileInfo.GetMd5().GetValue(),
 	}
 }
 

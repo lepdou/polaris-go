@@ -18,21 +18,24 @@
 
 package configconnector
 
-import (
-	"github.com/polarismesh/polaris-go/pkg/plugin"
-	"github.com/polarismesh/polaris-go/pkg/plugin/common"
-)
-
-// ConfigConnector interface of config connector plugin
-type ConfigConnector interface {
-	plugin.Plugin
-	// GetConfigFile Get config file
-	GetConfigFile(configFile *ConfigFile) (*ConfigFileResponse, error)
-	// WatchConfigFiles Watch config files
-	WatchConfigFiles(configFileList []*ConfigFile) (*ConfigFileResponse, error)
+// ConfigFileResponse 配置文件响应体
+type ConfigFileResponse struct {
+	Code       uint32
+	Message    string
+	ConfigFile *ConfigFile
 }
 
-// init
-func init() {
-	plugin.RegisterPluginInterface(common.TypeConfigConnector, new(ConfigConnector))
+// GetCode 获取配置文件响应体code
+func (c *ConfigFileResponse) GetCode() uint32 {
+	return c.Code
+}
+
+// GetMessage 获取配置文件响应体信息
+func (c *ConfigFileResponse) GetMessage() string {
+	return c.Message
+}
+
+// GetConfigFile 获取配置文件响应体内容
+func (c *ConfigFileResponse) GetConfigFile() *ConfigFile {
+	return c.ConfigFile
 }

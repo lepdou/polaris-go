@@ -157,7 +157,7 @@ func InitFlowEngine(flowEngine *Engine, initContext plugin.InitContext) error {
 	globalCtx.SetValue(model.ContextKeyEngine, flowEngine)
 
 	//初始化配置中心服务
-	flowEngine.configFileService = configuration.NewConfigFileService(flowEngine.connector, flowEngine.configuration)
+	flowEngine.configFileService = configuration.NewConfigFileService(flowEngine.configConnector, flowEngine.configuration)
 
 	return nil
 }

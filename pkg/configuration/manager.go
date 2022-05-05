@@ -18,21 +18,22 @@
 package configuration
 
 import (
+	"sync"
+
 	"github.com/polarismesh/polaris-go/pkg/config"
 	"github.com/polarismesh/polaris-go/pkg/model"
-	"github.com/polarismesh/polaris-go/pkg/plugin/serverconnector"
-	"sync"
+	"github.com/polarismesh/polaris-go/pkg/plugin/configconnector"
 )
 
 type configFileManager struct {
 	configFileCache          *sync.Map
 	lock                     *sync.Mutex
-	connector                serverconnector.ServerConnector
+	connector                configconnector.ConfigConnector
 	configuration            config.Configuration
 	configFileFactoryManager *configFileFactoryManager
 }
 
-func newConfigFileManager(connector serverconnector.ServerConnector,
+func newConfigFileManager(connector configconnector.ConfigConnector,
 	configuration config.Configuration) *configFileManager {
 	return &configFileManager{
 		configFileCache:          new(sync.Map),
