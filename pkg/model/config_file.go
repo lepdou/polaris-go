@@ -69,3 +69,24 @@ type ConfigFile interface {
 	// AddChangeListener 增加配置文件变更监听器
 	AddChangeListener(cb OnConfigFileChange)
 }
+
+
+type DefaultConfigFileMetadata struct {
+	Namespace string
+	FileGroup string
+	FileName  string
+}
+
+func (m *DefaultConfigFileMetadata) GetNamespace() string {
+	return m.Namespace
+}
+
+// GetFileGroup 获取配置文件组
+func (m *DefaultConfigFileMetadata) GetFileGroup() string {
+	return m.FileGroup
+}
+
+// GetFileName 获取配置文件值
+func (m *DefaultConfigFileMetadata) GetFileName() string {
+	return m.FileName
+}

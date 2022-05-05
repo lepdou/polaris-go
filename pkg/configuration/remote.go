@@ -19,25 +19,31 @@ package configuration
 
 import (
 	"github.com/polarismesh/polaris-go/pkg/config"
+	"github.com/polarismesh/polaris-go/pkg/model"
 	"github.com/polarismesh/polaris-go/pkg/plugin/serverconnector"
 )
 
 type remoteConfigFileRepo struct {
 	connector          serverconnector.ServerConnector
 	configuration      config.Configuration
-	configFileMetadata defaultConfigFileMetadata
+	configFileMetadata model.DefaultConfigFileMetadata
+
+	notifiedVersion uint64
 }
 
-type remoteRepoChangeListener func(configFileMetadata defaultConfigFileMetadata, newContent string)
+type remoteRepoChangeListener func(configFileMetadata model.DefaultConfigFileMetadata, newContent string)
 
-func newRemoteConfigFileRepo(metadata defaultConfigFileMetadata,
+func newRemoteConfigFileRepo(metadata model.DefaultConfigFileMetadata,
 	connector serverconnector.ServerConnector,
 	configuration config.Configuration) *remoteConfigFileRepo {
-	return &remoteConfigFileRepo{
+	repo := &remoteConfigFileRepo{
 		connector:          connector,
 		configuration:      configuration,
 		configFileMetadata: metadata,
+		notifiedVersion:    initVersion,
 	}
+
+	return repo
 }
 
 func (r *remoteConfigFileRepo) getContent() string {

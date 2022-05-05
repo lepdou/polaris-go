@@ -36,7 +36,7 @@ func newConfigFileFactory(connector serverconnector.ServerConnector, configurati
 	}
 }
 
-func (c *configFileFactory) createConfigFile(configFileMetadata defaultConfigFileMetadata) model.ConfigFile {
+func (c *configFileFactory) createConfigFile(configFileMetadata model.DefaultConfigFileMetadata) model.ConfigFile {
 	configFileRemoteRepo := newRemoteConfigFileRepo(configFileMetadata, c.connector, c.configuration)
 	return newDefaultConfigFile(configFileMetadata, configFileRemoteRepo)
 }
@@ -55,7 +55,7 @@ func newConfigFileFactoryManager(connector serverconnector.ServerConnector, conf
 	}
 }
 
-func (c *configFileFactoryManager) getFactory(configFileMetadata defaultConfigFileMetadata) *configFileFactory {
+func (c *configFileFactoryManager) getFactory(configFileMetadata model.DefaultConfigFileMetadata) *configFileFactory {
 	factoryObj, ok := c.factories.Load(configFileMetadata)
 	if ok {
 		return factoryObj.(*configFileFactory)

@@ -46,9 +46,9 @@ func NewConfigFileService(connector serverconnector.ServerConnector, configurati
 }
 
 func (c *ConfigFileService) GetConfigFile(namespace, fileGroup, fileName string) (model.ConfigFile, error) {
-	return c.configFileManager.getConfigFile(defaultConfigFileMetadata{
-		namespace: namespace,
-		fileGroup: fileGroup,
-		fileName:  fileName,
+	return c.configFileManager.getConfigFile(model.DefaultConfigFileMetadata{
+		Namespace: namespace,
+		FileGroup: fileGroup,
+		FileName:  fileName,
 	})
 }

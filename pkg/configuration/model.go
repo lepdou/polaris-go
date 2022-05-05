@@ -21,36 +21,24 @@ import (
 	"github.com/polarismesh/polaris-go/pkg/model"
 )
 
-type defaultConfigFileMetadata struct {
-	namespace string
-	fileGroup string
-	fileName  string
-}
-
-func (m *defaultConfigFileMetadata) GetNamespace() string {
-	return m.namespace
-}
-
-// GetFileGroup 获取配置文件组
-func (m *defaultConfigFileMetadata) GetFileGroup() string {
-	return m.fileGroup
-}
-
-// GetFileName 获取配置文件值
-func (m *defaultConfigFileMetadata) GetFileName() string {
-	return m.fileName
-}
+const (
+	initVersion = 0
+)
 
 type defaultConfigFile struct {
-	defaultConfigFileMetadata
+	model.DefaultConfigFileMetadata
 	remoteConfigFileRepo *remoteConfigFileRepo
 }
 
-func newDefaultConfigFile(metadata defaultConfigFileMetadata, repo *remoteConfigFileRepo) *defaultConfigFile {
-	return &defaultConfigFile{
-		defaultConfigFileMetadata: metadata,
-		remoteConfigFileRepo:      repo,
+func newDefaultConfigFile(metadata model.DefaultConfigFileMetadata, repo *remoteConfigFileRepo) *defaultConfigFile {
+	configFile := &defaultConfigFile{
+		remoteConfigFileRepo: repo,
 	}
+	configFile.Namespace = metadata.GetNamespace()
+	configFile.FileGroup = metadata.GetFileGroup()
+	configFile.FileName = metadata.GetFileName()
+
+	return configFile
 }
 
 // GetContent 获取配置文件内容
@@ -70,5 +58,5 @@ func (c *defaultConfigFile) AddChangeListenerWithChannel() chan model.ConfigFile
 
 // AddChangeListener 增加配置文件变更监听器
 func (c *defaultConfigFile) AddChangeListener(cb model.OnConfigFileChange) {
-	
+
 }

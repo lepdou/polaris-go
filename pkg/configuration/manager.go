@@ -43,7 +43,7 @@ func newConfigFileManager(connector serverconnector.ServerConnector,
 	}
 }
 
-func (c *configFileManager) getConfigFile(configFileMetadata defaultConfigFileMetadata) (model.ConfigFile, error) {
+func (c *configFileManager) getConfigFile(configFileMetadata model.DefaultConfigFileMetadata) (model.ConfigFile, error) {
 	configFileObj, ok := c.configFileCache.Load(configFileMetadata)
 	if !ok {
 		c.lock.Lock()
