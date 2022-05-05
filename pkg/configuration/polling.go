@@ -15,21 +15,4 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package api
-
-import "github.com/polarismesh/polaris-go/pkg/model"
-
-// ConfigFileAPI 配置文件的 API
-type ConfigFileAPI interface {
-	SDKOwner
-	// GetConfigFile 获取配置文件
-	GetConfigFile(namespace, fileGroup, fileName string) (model.ConfigFile, error)
-}
-
-var (
-	// NewConfigFileAPIBySDKContext 通过 SDKContext 创建 ConfigFileAPI
-	NewConfigFileAPIBySDKContext = newConfigFileAPIBySDKContext
-	NewConfigFileAPI             = newConfigFileAPI
-	NewConfigFileAPIByConfig     = newConfigFileAPIByConfig
-	NewConfigFileAPIByAddress     = newConfigFileAPIByAddress
-)
+package configuration

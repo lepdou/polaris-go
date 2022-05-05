@@ -1,0 +1,4 @@
+global:
+  serverConnector:
+    addresses:
+      - 9.134.122.18:8091
