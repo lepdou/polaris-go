@@ -108,7 +108,12 @@ func InitFlowEngine(flowEngine *Engine, initContext plugin.InitContext) error {
 	}
 
 	// 加载配置中心连接器
-	flowEngine.configConnector, err = data.GetConfigConnector(cfg, plugins)
+	if len(cfg.GetConfigFile().GetConfigConnectorConfig().GetAddresses()) > 0 {
+		flowEngine.configConnector, err = data.GetConfigConnector(cfg, plugins)
+		if err != nil {
+			return err
+		}
+	}
 
 	// 加载服务路由链插件
 	err = flowEngine.LoadFlowRouteChain()

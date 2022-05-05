@@ -55,6 +55,11 @@ func (c *configFileAPI) GetConfigFile(namespace, fileGroup, fileName string) (mo
 	return c.context.GetEngine().SyncGetConfigFile(namespace, fileGroup, fileName)
 }
 
+// GetConfigFile1 todo 需要删除
+func (c *configFileAPI) GetConfigFile1(namespace, fileGroup, fileName string) string {
+	return c.context.GetEngine().SyncGetConfigFile1(namespace, fileGroup, fileName)
+}
+
 func (c *configFileAPI) SDKContext() SDKContext {
 	return c.context
 }

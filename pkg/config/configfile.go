@@ -29,12 +29,12 @@ import (
 
 // 对接配置中心相关配置
 type ConfigFileConfigImpl struct {
-	ConfigConnectorConfig     *ConfigConnectorConfigImpl `yaml:"serverConnector" json:"serverConnector"`
+	ConfigConnectorConfig     *ConfigConnectorConfigImpl `yaml:"configConnector" json:"configConnector"`
 	PropertiesValueCacheSize  *int32                     `yaml:"propertiesValueCacheSize" json:"propertiesValueCacheSize"`
 	PropertiesValueExpireTime *int64                     `yaml:"propertiesValueExpireTime" json:"propertiesValueExpireTime"`
 }
 
-// GetConfigConnectorConfig config.serverConnector前缀开头的所有配置项
+// GetConfigConnectorConfig config.configConnector前缀开头的所有配置项
 func (c *ConfigFileConfigImpl) GetConfigConnectorConfig() ConfigConnectorConfig {
 	return c.ConfigConnectorConfig
 }

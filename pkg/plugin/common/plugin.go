@@ -246,4 +246,5 @@ var LoadedPluginTypes = []Type{
 	TypeSubScribe,
 	TypeLocationProvider,
 	TypeReportHandler,
+	TypeConfigConnector,
 }

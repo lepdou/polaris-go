@@ -24,6 +24,8 @@ type ConfigFileAPI interface {
 	SDKOwner
 	// GetConfigFile 获取配置文件
 	GetConfigFile(namespace, fileGroup, fileName string) (model.ConfigFile, error)
+	// GetConfigFile1 todo 需要删除
+	GetConfigFile1(namespace, fileGroup, fileName string) string
 }
 
 var (
@@ -31,5 +33,5 @@ var (
 	NewConfigFileAPIBySDKContext = newConfigFileAPIBySDKContext
 	NewConfigFileAPI             = newConfigFileAPI
 	NewConfigFileAPIByConfig     = newConfigFileAPIByConfig
-	NewConfigFileAPIByAddress     = newConfigFileAPIByAddress
+	NewConfigFileAPIByAddress    = newConfigFileAPIByAddress
 )

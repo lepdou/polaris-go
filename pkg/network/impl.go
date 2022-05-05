@@ -84,7 +84,7 @@ func (s *ServerAddressList) getAndConnectServer(
 func (s *ServerAddressList) getServerAddress(hashKey []byte) (string, model.Instance, error) {
 	var targetAddress string
 	var instance model.Instance
-	if s.service.ClusterType == config.BuiltinCluster {
+	if s.service.ClusterType == config.BuiltinCluster || s.service.ClusterType == config.ConfigCluster {
 		serverCount := len(s.addresses)
 		targetAddress = s.addresses[s.curIndex%serverCount]
 		if s.curIndex == math.MaxInt32 {
@@ -301,6 +301,19 @@ func NewConnectionManager(
 		manager.discoverService = builtInAddrList.service.ServiceKey
 		manager.ready = serviceReadyStatus
 	}
+
+	configAddresses := cfg.GetConfigFile().GetConfigConnectorConfig().GetAddresses()
+	configAddrList := &ServerAddressList{
+		service: config.ClusterService{
+			ServiceKey:  model.ServiceKey{Namespace: config.ServerNamespace, Service: defaultService},
+			ClusterType: config.ConfigCluster,
+		},
+		useDefault: false,
+		manager:    manager,
+		addresses:  configAddresses,
+		curIndex:   rand.Intn(len(addresses)),
+	}
+	manager.serverServices[config.ConfigCluster] = configAddrList
 
 	manager.ctx, manager.cancel = context.WithCancel(context.Background())
 	go manager.doSwitchRoutine()

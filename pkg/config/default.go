@@ -209,6 +209,8 @@ const (
 	MaxRateLimitWindowSize = 20000
 	// 默认超时清理时延
 	DefaultRateLimitPurgeInterval = 1 * time.Minute
+	// 默认的注册中心连接器插件
+	DefaultConfigConnector string = "polaris"
 )
 
 // 默认的就近路由配置
@@ -255,6 +257,7 @@ const (
 	ServerDiscoverService  = "polaris.discover"
 	ServerHeartBeatService = "polaris.healthcheck"
 	ServerMonitorService   = "polaris.monitor"
+	ServerConfigService    = "polaris.config"
 )
 
 // server集群服务信息
@@ -538,7 +541,10 @@ func (c *ConfigurationImpl) SetDefault() {
 // systemConfig init
 func (s *SystemConfigImpl) Init() {
 	s.DiscoverCluster = &ServerClusterConfigImpl{}
-	s.ConfigCluster = &ServerClusterConfigImpl{}
+	s.ConfigCluster = &ServerClusterConfigImpl{
+		Namespace: ServerNamespace,
+		Service:   ServerConfigService,
+	}
 	s.HealthCheckCluster = &ServerClusterConfigImpl{}
 	s.MonitorCluster = &ServerClusterConfigImpl{
 		Namespace: ServerNamespace,

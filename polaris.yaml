@@ -315,14 +315,11 @@ config:
   # 类型转化缓存的过期时间，默认为1分钟
   propertiesValueExpireTime: 60000
   # 连接器配置，默认为北极星服务端
-  serverConnector:
+  configConnector:
     id: polaris-config
     connectorType: polaris
-    #描述：默认服务端埋点接入地址
-    addresses:
-      - 127.0.0.1:8093
     #描述: 访问server的连接协议，SDK会根据协议名称会加载对应的插件
-    protocol: grpc
+    protocol: polaris
     #描述: 发起连接后的连接超时时间
     connectTimeout: 500ms
     #描述: 与服务端发起远程请求超时时间

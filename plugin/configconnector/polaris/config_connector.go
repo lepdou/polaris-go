@@ -91,7 +91,7 @@ func (c *Connector) Init(ctx *plugin.InitContext) error {
 	}
 	c.connectionIdleTimeout = ctx.Config.GetGlobal().GetServerConnector().GetConnectionIdleTimeout()
 	c.valueCtx = ctx.ValueCtx
-	protocol := ctx.Config.GetGlobal().GetServerConnector().GetProtocol()
+	protocol := ctx.Config.GetConfigFile().GetConfigConnectorConfig().GetProtocol()
 	if protocol == c.Name() {
 		log.GetBaseLogger().Infof("set %s plugin as connectionCreator", c.Name())
 		c.connManager.SetConnCreator(c)

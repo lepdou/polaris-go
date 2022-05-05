@@ -21,6 +21,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/polarismesh/polaris-go/pkg/plugin/configconnector"
+
 	"github.com/polarismesh/polaris-go/pkg/config"
 	"github.com/polarismesh/polaris-go/pkg/flow/cbcheck"
 	"github.com/polarismesh/polaris-go/pkg/flow/data"
@@ -635,4 +637,14 @@ func (e *Engine) realInitCalleeService(req *model.InitCalleeServiceRequest,
 
 func (e *Engine) SyncGetConfigFile(namespace, fileGroup, fileName string) (model.ConfigFile, error) {
 	return e.configFileService.GetConfigFile(namespace, fileGroup, fileName)
+}
+
+// SyncGetConfigFile1 todo 需要删除
+func (e *Engine) SyncGetConfigFile1(namespace, fileGroup, fileName string) string {
+	configFileResponse, _ := e.configConnector.GetConfigFile(&configconnector.ConfigFile{
+		Namespace: namespace,
+		FileGroup: fileGroup,
+		FileName:  fileName,
+	})
+	return configFileResponse.GetConfigFile().GetContent()
 }

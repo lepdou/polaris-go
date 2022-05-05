@@ -19,13 +19,21 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/polarismesh/polaris-go/api"
 )
 
 func main() {
-	configFileAPI, _ := api.NewConfigFileAPIByAddress("9.134.122.18:8091")
+	//configFileAPI, err := api.NewConfigFileAPIByAddress("9.134.122.18:8091")
+	configFileAPI, err := api.NewConfigFileAPI()
 
-	configFile, _ := configFileAPI.GetConfigFile("default", "polaris-config-example", "config/bootstrap.yml")
+	if err != nil {
+		fmt.Println("fail to start example.", err)
+	} else {
+		configFile := configFileAPI.GetConfigFile1("default", "polaris-config-example", "config/bootstrap.yml")
 
-	fmt.Println(configFile.GetContent())
+		//fmt.Println(configFile.GetContent())
+		fmt.Println(configFile)
+	}
+
 }

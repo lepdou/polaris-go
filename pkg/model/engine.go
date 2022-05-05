@@ -120,4 +120,6 @@ type Engine interface {
 	//
 	// SyncGetConfigFile 同步获取配置文件
 	SyncGetConfigFile(namespace, fileGroup, fileName string) (ConfigFile, error)
+	// SyncGetConfigFile1 todo 需要删除
+	SyncGetConfigFile1(namespace, fileGroup, fileName string) string
 }
