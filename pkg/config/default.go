@@ -287,7 +287,6 @@ func (s ServerServices) GetClusterService(clsType ClusterType) *ClusterService {
 // 获取系统服务列表
 func GetServerServices(cfg Configuration) ServerServices {
 	discoverConfig := cfg.GetGlobal().GetSystem().GetDiscoverCluster()
-	configConfig := cfg.GetGlobal().GetSystem().GetConfigCluster()
 	healthCheckConfig := cfg.GetGlobal().GetSystem().GetHealthCheckCluster()
 	monitorConfig := cfg.GetGlobal().GetSystem().GetMonitorCluster()
 
@@ -297,13 +296,6 @@ func GetServerServices(cfg Configuration) ServerServices {
 			ServiceKey:    ServiceClusterToServiceKey(discoverConfig),
 			ClusterType:   DiscoverCluster,
 			ClusterConfig: discoverConfig,
-		}
-	}
-	if len(configConfig.GetService()) > 0 && len(configConfig.GetNamespace()) > 0 {
-		retMap[ConfigCluster] = ClusterService{
-			ServiceKey:    ServiceClusterToServiceKey(configConfig),
-			ClusterType:   ConfigCluster,
-			ClusterConfig: configConfig,
 		}
 	}
 	if len(healthCheckConfig.GetService()) > 0 && len(healthCheckConfig.GetNamespace()) > 0 {
@@ -541,10 +533,6 @@ func (c *ConfigurationImpl) SetDefault() {
 // systemConfig init
 func (s *SystemConfigImpl) Init() {
 	s.DiscoverCluster = &ServerClusterConfigImpl{}
-	s.ConfigCluster = &ServerClusterConfigImpl{
-		Namespace: ServerNamespace,
-		Service:   ServerConfigService,
-	}
 	s.HealthCheckCluster = &ServerClusterConfigImpl{}
 	s.MonitorCluster = &ServerClusterConfigImpl{
 		Namespace: ServerNamespace,
@@ -555,7 +543,6 @@ func (s *SystemConfigImpl) Init() {
 // 设置systemConfig默认值
 func (s *SystemConfigImpl) SetDefault() {
 	s.DiscoverCluster.SetDefault()
-	s.ConfigCluster.SetDefault()
 	s.HealthCheckCluster.SetDefault()
 	s.MonitorCluster.SetDefault()
 }
@@ -575,10 +562,6 @@ func (s *SystemConfigImpl) Verify() error {
 	if err = s.DiscoverCluster.Verify(); err != nil {
 		errs = multierror.Append(errs,
 			fmt.Errorf("fail to verify serverClusters.discoverCluster, error is %v", err))
-	}
-	if err = s.ConfigCluster.Verify(); err != nil {
-		errs = multierror.Append(errs,
-			fmt.Errorf("fail to verify serverClusters.configCluster, error is %v", err))
 	}
 	if err = s.HealthCheckCluster.Verify(); err != nil {
 		errs = multierror.Append(errs,

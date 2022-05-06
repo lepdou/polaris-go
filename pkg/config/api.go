@@ -74,6 +74,8 @@ type ProviderConfig interface {
 
 type ConfigFileConfig interface {
 	BaseConfig
+	// IsEnable 是否启用配置中心
+	IsEnable() bool
 	// 配置文件连接器
 	GetConfigConnectorConfig() ConfigConnectorConfig
 	// 值缓存的最大数量
@@ -115,9 +117,6 @@ type SystemConfig interface {
 	// GetDiscoverCluster global.systemConfig.discoverCluster
 	// 服务发现集群
 	GetDiscoverCluster() ServerClusterConfig
-	// GetConfigCluster global.systemConfig.configCluster
-	// 配置中心集群
-	GetConfigCluster() ServerClusterConfig
 	// GetHealthCheckCluster global.systemConfig.healthCheckCluster
 	// 健康检查集群
 	GetHealthCheckCluster() ServerClusterConfig

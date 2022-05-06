@@ -13,11 +13,6 @@ global:
       service: polaris.discover
       #可选：服务刷新间隔
       refreshInterval: 10m
-    configCluster:
-      namespace: Polaris
-        service: polaris.config
-        #可选：服务刷新间隔
-        refreshInterval: 10m
     #健康检查集群
     healthCheckCluster:
       namespace: Polaris

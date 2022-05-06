@@ -146,8 +146,6 @@ type SystemConfigImpl struct {
 	Mode model.RunMode `yaml:"mode" json:"mode"`
 	// 服务发现集群
 	DiscoverCluster *ServerClusterConfigImpl `yaml:"discoverCluster" json:"discoverCluster"`
-	// 配置中心集群
-	ConfigCluster *ServerClusterConfigImpl `yaml:"configCluster" json:"configCluster"`
 	// 健康检查集群
 	HealthCheckCluster *ServerClusterConfigImpl `yaml:"healthCheckCluster" json:"healthCheckCluster"`
 	// 监控上报集群
@@ -169,11 +167,6 @@ func (s *SystemConfigImpl) SetMode(mode model.RunMode) {
 // GetDiscoverCluster 服务发现集群
 func (s *SystemConfigImpl) GetDiscoverCluster() ServerClusterConfig {
 	return s.DiscoverCluster
-}
-
-// GetConfigCluster 配置中心集群
-func (s *SystemConfigImpl) GetConfigCluster() ServerClusterConfig {
-	return s.ConfigCluster
 }
 
 // GetHealthCheckCluster 健康检查集群

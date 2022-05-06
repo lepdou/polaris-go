@@ -83,7 +83,7 @@ func (c *Connector) Init(ctx *plugin.InitContext) error {
 	if cfgValue != nil {
 		c.cfg = cfgValue.(*networkConfig)
 	}
-	connManager, err := network.NewConnectionManager(ctx.Config, ctx.ValueCtx)
+	connManager, err := network.NewConfigConnectionManager(ctx.Config, ctx.ValueCtx)
 	if err != nil {
 		return model.NewSDKError(model.ErrCodeAPIInvalidConfig, err, "fail to create config connectionManager")
 	} else {

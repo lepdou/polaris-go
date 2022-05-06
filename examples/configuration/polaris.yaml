@@ -4,7 +4,5 @@ global:
       - 127.0.0.1:8091
 config:
   configConnector:
-    connectorType: po
     addresses:
       - 9.134.122.18:8093
-

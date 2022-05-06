@@ -27,11 +27,18 @@ import (
 	"github.com/hashicorp/go-multierror"
 )
 
+var (
+	// DefaultConfigFileEnable 默认打开配置中心能力
+	DefaultConfigFileEnable = true
+)
+
 // 对接配置中心相关配置
 type ConfigFileConfigImpl struct {
-	ConfigConnectorConfig     *ConfigConnectorConfigImpl `yaml:"configConnector" json:"configConnector"`
-	PropertiesValueCacheSize  *int32                     `yaml:"propertiesValueCacheSize" json:"propertiesValueCacheSize"`
-	PropertiesValueExpireTime *int64                     `yaml:"propertiesValueExpireTime" json:"propertiesValueExpireTime"`
+	ConfigConnectorConfig *ConfigConnectorConfigImpl `yaml:"configConnector" json:"configConnector"`
+	// 是否启动配置中心
+	Enable                    *bool  `yaml:"enable" json:"enable"`
+	PropertiesValueCacheSize  *int32 `yaml:"propertiesValueCacheSize" json:"propertiesValueCacheSize"`
+	PropertiesValueExpireTime *int64 `yaml:"propertiesValueExpireTime" json:"propertiesValueExpireTime"`
 }
 
 // GetConfigConnectorConfig config.configConnector前缀开头的所有配置项
@@ -39,7 +46,17 @@ func (c *ConfigFileConfigImpl) GetConfigConnectorConfig() ConfigConnectorConfig 
 	return c.ConfigConnectorConfig
 }
 
-// GetPropertiesValueCacheSize config.propertiesValueCacheSize前缀开头的所有配置项
+// IsEnable config.enable
+func (c *ConfigFileConfigImpl) IsEnable() bool {
+	return *c.Enable
+}
+
+// SetEnable 设置是否开启配置中心功能
+func (c *ConfigFileConfigImpl) SetEnable(enable bool) {
+	c.Enable = &enable
+}
+
+// GetPropertiesValueCacheSize config.propertiesValueCacheSize
 func (c *ConfigFileConfigImpl) GetPropertiesValueCacheSize() int32 {
 	return *c.PropertiesValueCacheSize
 }
@@ -49,7 +66,7 @@ func (c *ConfigFileConfigImpl) SetPropertiesValueCacheSize(propertiesValueCacheS
 	c.PropertiesValueCacheSize = &propertiesValueCacheSize
 }
 
-// GetPropertiesValueExpireTime config.propertiesValueExpireTime前缀开头的所有配置项
+// GetPropertiesValueExpireTime config.propertiesValueExpireTime
 func (c *ConfigFileConfigImpl) GetPropertiesValueExpireTime() int64 {
 	return *c.PropertiesValueExpireTime
 }
@@ -69,6 +86,9 @@ func (c *ConfigFileConfigImpl) Verify() error {
 	if err = c.ConfigConnectorConfig.Verify(); err != nil {
 		errs = multierror.Append(errs, err)
 	}
+	if nil == c.Enable {
+		return fmt.Errorf("config.enable must not be nil")
+	}
 	if nil != c.PropertiesValueCacheSize && *c.PropertiesValueCacheSize < 0 {
 		errs = multierror.Append(errs, fmt.Errorf("config.propertiesValueCacheSize %v is invalid", c.PropertiesValueCacheSize))
 	}
@@ -81,6 +101,9 @@ func (c *ConfigFileConfigImpl) Verify() error {
 // SetDefault 设置ConfigConnector配置的默认值
 func (c *ConfigFileConfigImpl) SetDefault() {
 	c.ConfigConnectorConfig.SetDefault()
+	if c.Enable == nil {
+		c.Enable = &DefaultConfigFileEnable
+	}
 	if nil == c.PropertiesValueCacheSize {
 		c.PropertiesValueCacheSize = proto.Int32(int32(DefaultPropertiesValueCacheSize))
 	}
