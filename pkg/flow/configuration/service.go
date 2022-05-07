@@ -19,9 +19,10 @@ package configuration
 
 import (
 	"errors"
+	"sync"
+
 	"github.com/polarismesh/polaris-go/pkg/flow/configuration/remote"
 	"github.com/polarismesh/polaris-go/pkg/log"
-	"sync"
 
 	"github.com/polarismesh/polaris-go/pkg/config"
 	"github.com/polarismesh/polaris-go/pkg/model"
@@ -56,7 +57,7 @@ func NewConfigFileService(connector configconnector.ConfigConnector,
 
 // GetConfigFile 获取配置文件
 func (c *ConfigFileService) GetConfigFile(namespace, fileGroup, fileName string) (model.ConfigFile, error) {
-	if len(c.configuration.GetConfigFile().GetConfigConnectorConfig().GetAddresses()) > 0 {
+	if len(c.configuration.GetConfigFile().GetConfigConnectorConfig().GetAddresses()) <= 0 {
 		msg := "[Config] config connector is nil. " +
 			"please check whether configure config.configConnector.addresses in polaris.yaml"
 		log.GetBaseLogger().Errorf(msg)
